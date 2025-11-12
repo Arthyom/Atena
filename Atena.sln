@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atena", "Atena.csproj", "{330C7151-B7BB-7431-C8C3-BC6A9B616D81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{330C7151-B7BB-7431-C8C3-BC6A9B616D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{330C7151-B7BB-7431-C8C3-BC6A9B616D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{330C7151-B7BB-7431-C8C3-BC6A9B616D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{330C7151-B7BB-7431-C8C3-BC6A9B616D81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {75EF0461-4003-4F9A-AB31-0B7ADF678F7E}
+	EndGlobalSection
+EndGlobal

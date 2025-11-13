@@ -57,7 +57,7 @@ namespace Atena
             _report = report;
         }
 
-        private MainWindow(Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
+        private MainWindow(Builder builder) : base(builder.GetObject("MainWindow").Handle)
         {
             builder.Autoconnect(this);
 
@@ -71,7 +71,7 @@ namespace Atena
             if( !string.IsNullOrEmpty( _configs.ConnectionString))
             {     
                 _dbContext.Database.OpenConnection();
-                _dbContext.Periods.ToList().ForEach((p) =>
+                _dbContext.Periods.Where(p => p.Actual == true ).ToList().ForEach((p) =>
                 {
                     _comboBox_Periods.Append(p.Id.ToString(), p.Description);
                 });
@@ -109,22 +109,25 @@ namespace Atena
         private void ComboBoxText_Periods_Change(object sender, EventArgs e)
         {
             _comboBox_Groups.RemoveAll();
+            int i = 0;
             var mappedSender = (ComboBoxText)sender;
             selectedPeriodId = mappedSender.ActiveId;
             selectedPeriodAsText = mappedSender.ActiveText;
             _dbContext
                 .Groups
-                .Where(g => g.Periodid.ToString() == selectedPeriodId)
+                .Where(g => g.PeriodId == 1)
+                .Where( g => g.Visible.Value == 1)
                 .ToList()
                 .ForEach(g =>
                 {
                     string teacherName = _dbContext.Teachers
-                    .Where(t => t.Employeenumber == g.Employeenumber)
-                    .Select(t => $"{t.Name} {t.Firstlastname}")
+                    .Where(t => t.EmployeeNumber == g.EmployeeNumber)
+                    .Select(t => $"#{i+1} - {t.Name} {t.FirstLastName} {t.SecondLastName}")
                     .FirstOrDefault() ?? "No Teacher's Name";
 
-                    string label = $"{teacherName} - {g.Level}{g.Identifier}";
+                    string label = $"{teacherName} - {g.Level} - {g.Identifier}";
                     _comboBox_Groups.Append(g.Id.ToString(), label);
+                    i++;
                 });
         }
         
@@ -138,7 +141,7 @@ namespace Atena
 
             studentsByGroupd = _dbContext
             .GroupMembers
-            .Where(gm => gm.Groupid.ToString() == selectedGroupId)
+            .Where(gm => gm.GroupId.ToString() == selectedGroupId  )
             .Select(gm => _dbContext.Students.Where(s => s.Nua == gm.Nua).FirstOrDefault())
             .ToList();
 
@@ -149,7 +152,7 @@ namespace Atena
                                         .Where(
                                                 v => 
                                                 v.Nua == sbg.Nua &&
-                                                v.Periodid.ToString() == selectedPeriodId
+                                                v.PeriodId.ToString() == selectedPeriodId
                                             )
                                         .ToList();
                 visitsByStudent.Add(sbg.Nua, relatedVisits);

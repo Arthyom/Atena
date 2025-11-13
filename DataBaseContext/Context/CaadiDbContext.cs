@@ -24,7 +24,9 @@ namespace DataBaseContext
         public virtual DbSet<Period> Periods { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Teacher> Teachers { get; set; }
+        public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Visit> Visits { get; set; }
+        public virtual DbSet<Visit1> Visits1 { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,38 +47,41 @@ namespace DataBaseContext
 
             modelBuilder.Entity<Group>(entity =>
             {
-                entity.Property(e => e.Employeenumber).HasDefaultValueSql("''");
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'1'");
 
-                entity.Property(e => e.Identifier).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Learningunit).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Level).HasDefaultValueSql("''");
+                entity.HasOne(d => d.EmployeeNumberNavigation)
+                    .WithMany(p => p.Groups)
+                    .HasForeignKey(d => d.EmployeeNumber)
+                    .HasConstraintName("FK_Groups_employeeNumber");
 
                 entity.HasOne(d => d.Period)
                     .WithMany(p => p.Groups)
-                    .HasForeignKey(d => d.Periodid)
-                    .HasConstraintName("Groups_Periods_FK");
+                    .HasForeignKey(d => d.PeriodId)
+                    .HasConstraintName("FK_Groups_periodId");
             });
 
             modelBuilder.Entity<GroupMember>(entity =>
             {
+                entity.HasKey(e => new { e.Nua, e.GroupId })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
                 entity.HasOne(d => d.Group)
-                    .WithMany()
-                    .HasForeignKey(d => d.Groupid)
-                    .HasConstraintName("GroupMembers_Groups_FK");
+                    .WithMany(p => p.GroupMembers)
+                    .HasForeignKey(d => d.GroupId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GroupMembers_groupId");
 
                 entity.HasOne(d => d.NuaNavigation)
-                    .WithMany()
+                    .WithMany(p => p.GroupMembers)
                     .HasForeignKey(d => d.Nua)
-                    .HasConstraintName("GroupMember_Stuents_FK");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GroupMembers_nua");
             });
 
             modelBuilder.Entity<Period>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Description).HasDefaultValueSql("''");
+                entity.Property(e => e.Actual).HasDefaultValueSql("'0'");
             });
 
             modelBuilder.Entity<Student>(entity =>
@@ -84,47 +89,47 @@ namespace DataBaseContext
                 entity.HasKey(e => e.Nua)
                     .HasName("PRIMARY");
 
-                entity.Property(e => e.Nua).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Email).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Firstlastname).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Gender).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Name).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Program).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Secondlastname).HasDefaultValueSql("''");
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'1'");
             });
 
             modelBuilder.Entity<Teacher>(entity =>
             {
-                entity.HasKey(e => e.Employeenumber)
+                entity.HasKey(e => e.EmployeeNumber)
                     .HasName("PRIMARY");
 
-                entity.Property(e => e.Employeenumber).HasDefaultValueSql("''");
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'1'");
+            });
 
-                entity.Property(e => e.Email).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Firstlastname).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Gender).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Name).HasDefaultValueSql("''");
-
-                entity.Property(e => e.Secondlastname).HasDefaultValueSql("''");
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'1'");
             });
 
             modelBuilder.Entity<Visit>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'1'");
+
+                entity.HasOne(d => d.NuaNavigation)
+                    .WithMany(p => p.Visits)
+                    .HasForeignKey(d => d.Nua)
+                    .HasConstraintName("FK_Visit_nua");
 
                 entity.HasOne(d => d.Period)
                     .WithMany(p => p.Visits)
+                    .HasForeignKey(d => d.PeriodId)
+                    .HasConstraintName("FK_Visit_periodId");
+            });
+
+            modelBuilder.Entity<Visit1>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Visible).HasDefaultValueSql("b'0'");
+
+                entity.HasOne(d => d.Period)
+                    .WithMany(p => p.Visit1s)
                     .HasForeignKey(d => d.Periodid)
-                    .HasConstraintName("Visits_Periods");
+                    .HasConstraintName("FK_Visits_periodid");
             });
 
             OnModelCreatingPartial(modelBuilder);

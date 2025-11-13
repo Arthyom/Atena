@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.24"/>
+  <requires lib="gtk+" version="3.22"/>
   <object class="GtkWindow" id="SecondWindow">
     <property name="default-width">500</property>
     <property name="default-height">120</property>

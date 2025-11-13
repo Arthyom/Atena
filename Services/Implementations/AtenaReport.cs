@@ -133,7 +133,7 @@ public class AtenaReport : IAtenaReport
             string hours = nuasHours[i].Item2;
             string name = _context.Students
                                       .Where(s => s.Nua == nua)
-                                      .Select(s => $"{s.Name} {s.Firstlastname}")
+                                      .Select(s => $"{s.Name} {s.FirstLastName} {s.SecondLastName}")
                                       .FirstOrDefault();
 
             tableRow.Cells[0].AddParagraph((i+1).ToString()).Format.Alignment = ParagraphAlignment.Center;

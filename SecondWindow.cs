@@ -22,7 +22,7 @@ public class SecondWindow : Window
     }
 
 
-    private SecondWindow(Builder builder) : base(builder.GetRawOwnedObject("SecondWindow"))
+    private SecondWindow(Builder builder) : base(builder.GetObject("SecondWindow").Handle)
     {
         builder.Autoconnect(this);
         DeleteEvent += Window_DeleteEvent;
@@ -33,7 +33,8 @@ public class SecondWindow : Window
     {
         _configs.ConnectionString = _txt_cn.Text;
         if( !string.IsNullOrEmpty(_configs.ConnectionString) )
-            this.Close();
+        // Window_DeleteEvent(sender,(DeleteEventArgs)e);
+            Close();
     }
 
     private void Window_DeleteEvent(object sender, DeleteEventArgs a)

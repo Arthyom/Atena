@@ -65,6 +65,7 @@ namespace Atena
             {
                 if((bool)e.RetVal == true)
                 {
+                    SecondWindow.Hide();
                     MainWindow.ShowAll();
                 }
             };

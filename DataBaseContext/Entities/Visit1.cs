@@ -6,35 +6,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataBaseContext
 {
-    [Table("Visit")]
-    [Index(nameof(Nua), Name = "FK_Visit_nua")]
-    [Index(nameof(PeriodId), Name = "FK_Visit_periodId")]
+    [Table("Visits")]
+    [Index(nameof(Periodid), Name = "FK_Visits_periodid")]
     [MySqlCharSet("utf8mb3")]
     [MySqlCollation("utf8mb3_general_ci")]
-    public partial class Visit
+    public partial class Visit1
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Column("end", TypeName = "datetime")]
         public DateTime? End { get; set; }
+        [Column("nua")]
+        [StringLength(255)]
+        public string Nua { get; set; }
         [Column("skill")]
         [StringLength(255)]
         public string Skill { get; set; }
         [Column("start", TypeName = "datetime")]
         public DateTime? Start { get; set; }
-        [Column("nua")]
-        public string Nua { get; set; }
-        [Column("periodId")]
-        public int? PeriodId { get; set; }
-        [Column("visible", TypeName = "bit(1)")]
+        [Column("periodid")]
+        public int? Periodid { get; set; }
+        [Column("visible", TypeName = "bit(2)")]
         public ulong? Visible { get; set; }
 
-        [ForeignKey(nameof(Nua))]
-        [InverseProperty(nameof(Student.Visits))]
-        public virtual Student NuaNavigation { get; set; }
-        [ForeignKey(nameof(PeriodId))]
-        [InverseProperty("Visits")]
+        [ForeignKey(nameof(Periodid))]
+        [InverseProperty("Visit1s")]
         public virtual Period Period { get; set; }
     }
 }

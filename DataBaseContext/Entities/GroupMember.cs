@@ -6,22 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataBaseContext
 {
-    [Keyless]
-    [Index(nameof(Nua), Name = "GroupMember_Stuents_FK")]
-    [Index(nameof(Groupid), Name = "GroupMembers_Groups_FK")]
+    [Index(nameof(GroupId), Name = "FK_GroupMembers_groupId")]
     [MySqlCharSet("utf8mb3")]
     [MySqlCollation("utf8mb3_general_ci")]
     public partial class GroupMember
     {
-        [Column("groupid")]
-        public uint? Groupid { get; set; }
+        [Key]
         [Column("nua")]
-        [StringLength(10)]
         public string Nua { get; set; }
+        [Key]
+        [Column("groupId")]
+        public int GroupId { get; set; }
+        [Column("visible", TypeName = "bit(2)")]
+        public ulong? Visible { get; set; }
 
-        [ForeignKey(nameof(Groupid))]
+        [ForeignKey(nameof(GroupId))]
+        [InverseProperty("GroupMembers")]
         public virtual Group Group { get; set; }
         [ForeignKey(nameof(Nua))]
+        [InverseProperty(nameof(Student.GroupMembers))]
         public virtual Student NuaNavigation { get; set; }
     }
 }

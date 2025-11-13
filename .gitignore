@@ -484,3 +484,11 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+obj/Atena.csproj.nuget.dgspec.json
+obj/Atena.csproj.nuget.g.targets
+obj/project.assets.json
+obj/project.nuget.cache
+obj/Debug/net6.0/Atena.AssemblyInfo.cs
+obj/Debug/net6.0/Atena.AssemblyInfoInputs.cache
+obj/Debug/net6.0/Atena.assets.cache
+obj/Debug/net6.0/Atena.csproj.AssemblyReference.cache

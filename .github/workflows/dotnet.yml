@@ -14,6 +14,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment: caadi
+
     steps:
     
     - uses: actions/checkout@v4

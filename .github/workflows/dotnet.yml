@@ -27,6 +27,10 @@ jobs:
       env:
         Caadi_cn: ${{ secrets.CAADI_CN }}
 
+
+    - name: Verify updated config.json
+      run: cat appsettings.json
+
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4

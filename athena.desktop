@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Athena
+Exec=/usr/local/bin/Atena
+Comment=AthenaCaadi
+Icon=/usr/share/icons/hicolor/48x48/apps/athena.svg
+Type=Application
+Categories=Utility;

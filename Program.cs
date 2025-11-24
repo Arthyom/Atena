@@ -18,19 +18,19 @@ namespace Atena
         [STAThread]
         public static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder()
-                         .SetBasePath(Directory.GetCurrentDirectory())
-                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            // var builder = new ConfigurationBuilder()
+            //              .SetBasePath(Directory.GetCurrentDirectory())
+            //              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            IConfiguration config = builder.Build();
+            // IConfiguration config = builder.Build();
 
-            string cn = "";
-            var IsCaadi = config.GetSection("Env:IsCaadi").Get<bool>();
+            // string cn = "";
+            // var IsCaadi = config.GetSection("Env:IsCaadi").Get<bool>();
             
-            if(IsCaadi)
-                cn = config.GetConnectionString("Caadi");
-            else
-                cn = config.GetConnectionString("test");
+            // if(IsCaadi)
+            //     cn = config.GetConnectionString("Caadi");
+            // else
+            //     cn = config.GetConnectionString("test");
 
            
             
@@ -46,10 +46,12 @@ namespace Atena
                     services.AddSingleton<SecondWindow>();
                     services.AddSingleton<AtenaGlobalConfigs>();
                     services.AddDbContext<CaadiDbContext>();
+ 
                     // services.AddDbContext<CaadiDbContext>((options) =>
                     // {
                     //     options.UseMySql(cn, ServerVersion.AutoDetect(cn));
                     // });
+                    
                 })
                 .Build();
 
@@ -60,17 +62,24 @@ namespace Atena
             var SecondWindow = host.Services.GetRequiredService<SecondWindow>();
             var MainWindow = host.Services.GetRequiredService<MainWindow>();
 
-            SecondWindow.ShowAll();
-            SecondWindow.DeleteEvent += (sender, e) =>
-            {
-                if((bool)e.RetVal == true)
-                {
-                    SecondWindow.Hide();
-                    MainWindow.ShowAll();
-                }
-            };
+                MainWindow.ShowAll();
+            // if (IsCaadi)
+            // {
+            // }
+            // else
+            // {
+                
+            //     SecondWindow.ShowAll();
+            //     SecondWindow.DeleteEvent += (sender, e) =>
+            //     {
+            //         if((bool)e.RetVal == true)
+            //         {
+            //             SecondWindow.Hide();
+            //             MainWindow.ShowAll();
+            //         }
+            //     };
+            // }
 
-            // MainWindow.ShowAll();
             
             Application.Run();
         }

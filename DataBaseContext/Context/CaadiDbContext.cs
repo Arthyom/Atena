@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Atena.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace DataBaseContext
 {
@@ -30,14 +32,29 @@ namespace DataBaseContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                string cn = _atenaGlobalConfigs.ConnectionString;
-                if (!string.IsNullOrEmpty(cn))
-                {
+             var builder = new ConfigurationBuilder()
+                         .SetBasePath(Directory.GetCurrentDirectory())
+                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            IConfiguration config = builder.Build();
+
+            string cn = "";
+            var IsCaadi = config.GetSection("Env:IsCaadi").Get<bool>();
+            
+            if(IsCaadi)
+                cn = config.GetConnectionString("Caadi");
+            else
+                cn = config.GetConnectionString("test");
+
                     optionsBuilder.UseMySql(cn, Microsoft.EntityFrameworkCore.ServerVersion.AutoDetect(cn));
-                }
-            }
+                
+            // if (!optionsBuilder.IsConfigured)
+            // {
+            //     string cn = _atenaGlobalConfigs.ConnectionString;
+            //     if (!string.IsNullOrEmpty(cn))
+            //     {
+            //     }
+            // }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

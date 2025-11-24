@@ -68,9 +68,8 @@ namespace Atena
         
         private void Window_Shown(object sender, EventArgs e)
         {
-            if( !string.IsNullOrEmpty( _configs.ConnectionString))
+            if( !string.IsNullOrEmpty( _configs.ConnectionString) || _dbContext.Database.CanConnect() )
             {     
-                _dbContext.Database.OpenConnection();
                 _dbContext.Periods.Where(p => p.Actual == true ).ToList().ForEach((p) =>
                 {
                     _comboBox_Periods.Append(p.Id.ToString(), p.Description);

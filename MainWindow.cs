@@ -52,7 +52,7 @@ namespace Atena
         {
             _dbContext = dbContext;
 
-           _configs = configs;
+            _configs = configs;
 
             _report = report;
         }
@@ -65,12 +65,12 @@ namespace Atena
             Shown += Window_Shown;
             // _button1.Clicked += Button1_Clicked;
         }
-        
+
         private void Window_Shown(object sender, EventArgs e)
         {
-            if( !string.IsNullOrEmpty( _configs.ConnectionString) || _dbContext.Database.CanConnect() )
-            {     
-                _dbContext.Periods.Where(p => p.Actual == true ).ToList().ForEach((p) =>
+            if (!string.IsNullOrEmpty(_configs.ConnectionString) || _dbContext.Database.CanConnect())
+            {
+                _dbContext.Periods.Where(p => p.Actual == true).ToList().ForEach((p) =>
                 {
                     _comboBox_Periods.Append(p.Id.ToString(), p.Description);
                 });
@@ -115,13 +115,13 @@ namespace Atena
             _dbContext
                 .Groups
                 .Where(g => g.PeriodId == 1)
-                .Where( g => g.Visible.Value == 1)
+                .Where(g => g.Visible.Value == 1)
                 .ToList()
                 .ForEach(g =>
                 {
                     string teacherName = _dbContext.Teachers
                     .Where(t => t.EmployeeNumber == g.EmployeeNumber)
-                    .Select(t => $"#{i+1} - {t.Name} {t.FirstLastName} {t.SecondLastName}")
+                    .Select(t => $"#{i + 1} - {t.Name} {t.FirstLastName} {t.SecondLastName}")
                     .FirstOrDefault() ?? "No Teacher's Name";
 
                     string label = $"{teacherName} - {g.Level} - {g.Identifier}";
@@ -129,52 +129,62 @@ namespace Atena
                     i++;
                 });
         }
-        
+
         private void ComboBoxText_Groups_Change(object sender, EventArgs e)
-        {   
-            studentsByGroupd.Clear();
-            visitsByStudent.Clear();
-            visitsByStudentGrouped.Clear();
-            var mappedSender = (ComboBoxText)sender;
-            selectedGroupId = mappedSender.ActiveId;
-
-            studentsByGroupd = _dbContext
-            .GroupMembers
-            .Where(gm => gm.GroupId.ToString() == selectedGroupId  )
-            .Select(gm => _dbContext.Students.Where(s => s.Nua == gm.Nua).FirstOrDefault())
-            .ToList();
-
-            studentsByGroupd.ForEach(sbg =>
+        {
+            try
             {
-                var relatedVisits = _dbContext
-                                        .Visits
-                                        .Where(
-                                                v => 
-                                                v.Nua == sbg.Nua &&
-                                                v.PeriodId.ToString() == selectedPeriodId
-                                            )
-                                        .ToList();
-                visitsByStudent.Add(sbg.Nua, relatedVisits);
-            });
 
-            visitsByStudent.Keys.ToList().ForEach(k =>
+                studentsByGroupd.Clear();
+                visitsByStudent.Clear();
+                visitsByStudentGrouped.Clear();
+                var mappedSender = (ComboBoxText)sender;
+                selectedGroupId = mappedSender.ActiveId;
+
+                studentsByGroupd = _dbContext
+                .GroupMembers
+                .Where(gm => gm.GroupId.ToString() == selectedGroupId)
+                .Select(gm => _dbContext.Students.Where(s => s.Nua == gm.Nua).FirstOrDefault())
+                .ToList();
+
+                studentsByGroupd.ForEach(sbg =>
+                {
+                    var relatedVisits = _dbContext
+                                            .Visits
+                                            .Where(
+                                                    v =>
+                                                    v.Nua == sbg.Nua &&
+                                                    v.PeriodId.ToString() == selectedPeriodId
+                                                )
+                                            .ToList();
+                    visitsByStudent.Add(sbg.Nua, relatedVisits);
+                });
+
+                visitsByStudent.Keys.ToList().ForEach(k =>
+                {
+                    visitsByStudentGrouped.Add(k, visitsByStudent[k].GroupBy(vs => vs.Start.Value.Month).ToList());
+                });
+
+                visitByStudentComputed = AtenaHelpersVisits.countAndCoumputeVisits(visitsByStudentGrouped);
+
+                var c = AtenaHelpersVisits.CorrectVistsFromComputed(visitByStudentComputed);
+
+                var s = AtenaHelpersHours.switchNuaByMonthAsKey(c);
+
+                var docs = _report
+                .getArraysToPdsFromData(selectedPeriodAsText, mappedSender.ActiveText, s);
+
+                _report.savePdfs(selectedPeriodAsText, mappedSender.ActiveText, docs);
+
+
+            }
+            catch (System.Exception exp)
             {
-                visitsByStudentGrouped.Add(k, visitsByStudent[k].GroupBy(vs => vs.Start.Value.Month).ToList());
-            });
 
-            visitByStudentComputed = AtenaHelpersVisits.countAndCoumputeVisits(visitsByStudentGrouped);
+                Console.WriteLine($"{exp.Data}");
+                throw exp.InnerException;
+            }
 
-            var c = AtenaHelpersVisits.CorrectVistsFromComputed(visitByStudentComputed);
-
-            var s  = AtenaHelpersHours.switchNuaByMonthAsKey(c);
-
-            var docs = _report
-            .getArraysToPdsFromData(selectedPeriodAsText, mappedSender.ActiveText, s);
-
-            _report.savePdfs(selectedPeriodAsText,mappedSender.ActiveText, docs);
-            
-
-        
         }
     }
 }

@@ -143,7 +143,11 @@ namespace Atena
 
                 studentsByGroupd = _dbContext
                 .GroupMembers
+                // .Where(gm => gm.GroupId.ToString() == selectedGroupId)
+                // .Select(gm => _dbContext.Students.Where(s => s.Nua == gm.Nua).FirstOrDefault())
+                // .ToList();
                 .Where(gm => gm.GroupId.ToString() == selectedGroupId)
+                .ToList()
                 .Select(gm => _dbContext.Students.Where(s => s.Nua == gm.Nua).FirstOrDefault())
                 .ToList();
 
